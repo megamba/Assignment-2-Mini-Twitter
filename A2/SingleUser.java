@@ -24,11 +24,15 @@ import java.util.Map;
 
 
 
+
 public class SingleUser extends User implements Subject {
 
     private Map<String, Observer> followers;
     private Map<String, Subject> following;
     private List<String> newsFeed;
+   
+    
+    private long lastUpdatedTime = 0;
 
     private String latestMessage;
     private int positiveMessageCount;
@@ -40,6 +44,8 @@ public class SingleUser extends User implements Subject {
         followers.put(this.getID(), this);
         following = new HashMap<String, Subject>();
         newsFeed = new ArrayList<String>();
+        
+        System.out.println(super.getCreationTime());    //assignment 3
     }
 
     public Map<String, Observer> getFollowers() {
@@ -95,8 +101,14 @@ public class SingleUser extends User implements Subject {
 
     @Override
     public void update(Subject subject) {
+        
+        lastUpdatedTime = System.currentTimeMillis();
+        
+        System.out.println("last update time: " + lastUpdatedTime);
+        
         newsFeed.add(0, (((SingleUser) subject).getID() + ": " + ((SingleUser) subject).getLatestMessage()));
     }
+    
 
     
     /*Subject methods*/
@@ -146,6 +158,7 @@ public class SingleUser extends User implements Subject {
         }
         return positive;
     }
+   
 
     
     

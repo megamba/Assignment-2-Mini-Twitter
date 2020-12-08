@@ -25,10 +25,15 @@ public class GroupsUser extends User implements Subject{
 
     private Map<String,User> groupUsers;
     private Map<String, Observer> followers;
+    
+    /*Assignment 3 addition*/
+    private long creationTime = System.currentTimeMillis();
 
     public GroupsUser(String id) {
         super(id);
         groupUsers = new HashMap<String,User>();
+        
+        System.out.println(getCreationTime());  //assignment 31
     }
 
     public Map<String,User> getGroupUsers() {
@@ -42,7 +47,11 @@ public class GroupsUser extends User implements Subject{
         return this;
     }
     
-    
+    /*Assignment 3 addition*/
+    public long getCreationTime() {
+        return creationTime;
+    }
+
 
     /*Composite methods*/
 
@@ -86,8 +95,9 @@ public class GroupsUser extends User implements Subject{
         }
         return msgCount;
     }
-
     
+
+
     
     /*Observer methods*/
 
@@ -96,6 +106,7 @@ public class GroupsUser extends User implements Subject{
         for (User user : groupUsers.values()) {
             ((Observer) user).update(subject);
         }
+        
     }
 
     

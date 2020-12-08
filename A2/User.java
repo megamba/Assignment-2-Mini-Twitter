@@ -12,12 +12,17 @@ package A2;
  * declares the interface for objects in the composition
  */
 import A2.Visitor.Visitor;
+import A2.Subject;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class User extends DefaultMutableTreeNode implements Observer {
 
     private String id;
     private int messageCount;
+    
+    /*Assignment 3 additions*/
+    private long creationTime = System.currentTimeMillis();
+    private long lastUpdatedTime = 0;
 
 
     public abstract int getSingleUserCount();
@@ -41,6 +46,16 @@ public abstract class User extends DefaultMutableTreeNode implements Observer {
     public void setMessageCount(int messageCount) {
         this.messageCount = messageCount;
     }
+    
+    /*Assignment 3 additions*/
+    public long getLastUpdatedTime() {
+        return lastUpdatedTime;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
+    }
+   
 
     
     /* Visitor methods*/
