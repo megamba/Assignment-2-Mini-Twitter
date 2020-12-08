@@ -8,6 +8,7 @@ package A2.GUI;
 import A2.GUI.Driver;
 import A2.GroupsUser;
 import A2.Observer;
+import A2.SingleUser;
 import A2.User;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
@@ -21,6 +22,10 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 /**
  *
  * @author miche
@@ -40,6 +45,9 @@ public class AdminControlPanel extends Panel {
     private JPanel openUserView;
     private JPanel showInfo;
 
+    private JButton validateUsersButton;
+    private JButton checkMostRecentUpdatedButton;
+    
     private DefaultMutableTreeNode root;
     private Map<String, Observer> allUsers;
 
@@ -64,8 +72,12 @@ public class AdminControlPanel extends Panel {
     private void addComponents() {
         addComponent(frame, treeView, 0, 0, 1, 6, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
         addComponent(frame, addUser, 1, 0, 2, 2, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
-        addComponent(frame, openUserView, 1, 2, 2, 2, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(frame, openUserView, 1, 2, 2, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
         addComponent(frame, showInfo, 1, 4, 2, 2, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        
+        //assignment 3
+        addComponent(frame, validateUsersButton, 1, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(frame, checkMostRecentUpdatedButton, 2, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
     }
 
     private void setComponents() {
@@ -81,6 +93,13 @@ public class AdminControlPanel extends Panel {
         
         openUserView = new OpenUserViewPanel(treeView, allUsers);
         showInfo = new ShowInfoPanel(treeView);
+        
+        /*Assignment 3 addition*/
+        validateUsersButton = new JButton("Validate Users");
+        setValidateUsersButtonActionListener();
+        
+        checkMostRecentUpdatedButton = new JButton("Check for recently updated");
+        setCheckMostRecentUpdatedButtonActionListener();
     }
 
     private void formatFrame() {
@@ -89,5 +108,91 @@ public class AdminControlPanel extends Panel {
         frame.setSize(800, 400);
         frame.setVisible(true);
     }
+    
+        
+    /*Assignment 3 addition*/
+    
+    private void setValidateUsersButtonActionListener() {
+        validateUsersButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                InfoPopup popup;
+                
+                if(allUsers.size() <= 2) {
+                    popup = new InfoPopup("Error!",
+                            "Only 1 user exists." ,
+                            JOptionPane.ERROR_MESSAGE);
+                }else {
+                    
+                    for(int i = 0; i < allUsers.size() - 1; i++) {
+                        
+                        System.out.println(allUsers.get(i));
+                        
+                        for(int j = 0; j < allUsers.size(); j++) {
+                            
+                            if(j != i) {
+                                if(((SingleUser) allUsers.get(i)).equals((SingleUser) allUsers.get(j))) {   //check for duplicate ID
+                                    popup = new InfoPopup("Error!",
+                                        "Duplicate user: " + allUsers.get(i),
+                                        JOptionPane.ERROR_MESSAGE);
+                                    break;
+                                }
+                            }
+                        }
+                            
+                        for(int k = 0; k < ((User) allUsers.get(i)).getID().length() - 1; k++) {
+
+                            if(((User) allUsers.get(k)).getID().substring(k, k + 1).equals(" ")) {
+                                System.out.println("An ID has a space: " + allUsers.get(k));
+
+                                popup = new InfoPopup("Error!",
+                                "User with a space : " + allUsers.get(i).toString(),
+                                JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }
+                            
+                        } 
+                    }   //end loop
+                    
+                }
+                
+            }
+        }); 
+    }   //end setValidateUsersButtonActionListener()
+
+    private void setCheckMostRecentUpdatedButtonActionListener() {
+        checkMostRecentUpdatedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                InfoPopup popup;
+                
+                if(allUsers.isEmpty()) {
+                    popup = new InfoPopup("Error!",
+                            "No users." ,
+                            JOptionPane.ERROR_MESSAGE);
+                }else {
+                    
+                    long mostRecentUpdate = 0;
+                    
+                    for(int i = 0; i < allUsers.size(); i++) {
+                        
+                        if(((User) allUsers.get(i)).getLastUpdatedTime() > mostRecentUpdate) {  //if this user's update time is greated than mostRecentUpdate, replace it
+                            mostRecentUpdate = ((User) allUsers.get(i)).getLastUpdatedTime();
+                        }
+                        
+                    }
+                    
+                    System.out.println("Most recent update time is: " + mostRecentUpdate);
+                }
+                
+                
+                
+            }
+        }); 
+    }   //end setValidateUsersButtonActionListener()
 
 }

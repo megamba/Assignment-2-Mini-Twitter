@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,6 +29,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  *
@@ -43,6 +48,9 @@ public class UserView extends Panel {
     private JTextArea tweetMessageTextArea;
     private JTextArea currentFollowing;
     private JTextArea newsFeedTextArea;
+    /*Assignment 3 addition*/
+    private JLabel creationTimeLabel;
+    private JLabel updateTimeLabel;
     
     private JButton followUserButton;
     private JButton postTweetButton;
@@ -72,6 +80,9 @@ public class UserView extends Panel {
         addComponent(frame, messageScrollPane, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
         addComponent(frame, postTweetButton, 1, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
         addComponent(frame, newsFeedScrollPane, 0, 3, 2, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        
+        /*Assignment 3 addition*/
+        addComponent(frame, creationTimeLabel, 0, 0, 0, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
     }
 
     private void setComponents() {
@@ -103,10 +114,13 @@ public class UserView extends Panel {
         formatTextArea(newsFeedTextArea);
         newsFeedScrollPane = new JScrollPane(newsFeedTextArea);
         newsFeedScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        /*Assignment 3 addition*/
+        creationTimeLabel = new JLabel("Creation Time: " + ((User) user).getCreationTime());
+
 
 
         updateCurrentFollowingTextArea();
-
 
         updateNewsFeedTextArea();
     }
@@ -184,13 +198,14 @@ public class UserView extends Panel {
     
     private void updateNewsFeedTextArea() {
         String list = "News Feed: \n";
-
+ 
         for (String news : ((SingleUser) user).getNewsFeed()) {
             list += " - " + news + "\n";
         }
         newsFeedTextArea.setText(list);
         newsFeedTextArea.setCaretPosition(0);
     }
+    
 
  
 }
